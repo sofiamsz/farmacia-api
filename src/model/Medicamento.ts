@@ -1,3 +1,4 @@
+import type { MedicamentoDTO } from "../interface/MedicamentoDTO.js";
 import { DatabaseModel } from "./DatabaseModel.js";
 
 const database = new DatabaseModel().pool;
@@ -74,12 +75,37 @@ class Medicamento {
         this.preco = preco;
     }
 
+         static async cadastrarMedicamento(medicamento: MedicamentoDTO): Promise<boolean> {
+            try {
+                const queryInsertMedicamento = `INSERT INTO medicamentos (nome, fabricante, principio_ativo, data_validadade, preco)
+                                    VALUES
+                                    ($1, $2, $3, $4, $5)
+                                    RETURNING id_cliente;`;
+    
+                const respostaBD = await database.query(queryInsertMedicamento, [
+                    medicamento.nome.toUpperCase(),
+                    medicamento.fabricante,
+                    medicamento.principioAtivo,
+                    medicamento.dataValidade,
+                    medicamento.preco
+                ]);
+                if (respostaBD.rows.length > 0) {
+                    console.info(`Medicamento cadastrado com sucesso. ID: ${respostaBD.rows[0].id_medicamento
+                    }`);
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error(`Erro na consulta ao banco de dados. ${error}`);
+                return false;
+            }
+        }
 
     static async listarMedicamento(): Promise<Array<Medicamento> | null> {
         try {
             let listaDeMedicamento: Array<Medicamento> = [];
 
-            const querySelectMedicamento = `SELECT * FROM Medicamento;`;
+            const querySelectMedicamento = `SELECT * FROM Medicamentos;`;
 
             const respostaBD = await database.query(querySelectMedicamento);
 
@@ -101,6 +127,60 @@ class Medicamento {
         } catch (error) {
             console.error(`Erro ao acessar o banco de dados. ${error}`);
             return null;
+        }
+    }
+
+        static async listarMedicamentoNome(nome: string): Promise<Medicamento | null> {
+        try {
+            const querySelectMedicamento = 'SELECT * FROM medicamentos WHERE nome=$1;';
+
+            const respostaBD = await database.query(querySelectMedicamento, [nome]);
+
+            if (respostaBD.rowCount != 0) {
+                const medicamento: Medicamento = new Medicamento(
+                    respostaBD.rows[0].nome,
+                    respostaBD.rows[0].fabricante,
+                    respostaBD.rows[0].principioAtivo,
+                    respostaBD.rows[0].dataValidade,
+                    respostaBD.rows[0].preco
+                );
+                medicamento.setNome(respostaBD.rows[0].nome);
+
+                return medicamento;
+
+            }
+            return null;
+
+        } catch (error) {
+            console.error('Erro ao buscar medicamento no banco de dados. ${error}');
+            return null
+        }
+    }
+
+            static async listarMedicamentoPrincipio(principioAtivo: string): Promise<Medicamento | null> {
+        try {
+            const querySelectMedicamento = 'SELECT * FROM medicamentos WHERE principio_ativo=$3;';
+
+            const respostaBD = await database.query(querySelectMedicamento, [principioAtivo]);
+
+            if (respostaBD.rowCount != 0) {
+                const medicamento: Medicamento = new Medicamento(
+                    respostaBD.rows[0].nome,
+                    respostaBD.rows[0].fabricante,
+                    respostaBD.rows[0].principioAtivo,
+                    respostaBD.rows[0].dataValidade,
+                    respostaBD.rows[0].preco
+                );
+                medicamento.setPrincipioAtivo(respostaBD.rows[0].principioAtivo);
+
+                return medicamento;
+
+            }
+            return null;
+
+        } catch (error) {
+            console.error('Erro ao buscar medicamento no banco de dados. ${error}');
+            return null
         }
     }
 }

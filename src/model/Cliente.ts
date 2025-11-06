@@ -78,7 +78,7 @@ class Cliente {
         try {
             const queryInsertCliente = `INSERT INTO clientes (nome, cpf, telefone, dataNascimento, email)
                                 VALUES
-                                ($1, $2, $3)
+                                ($1, $2, $3, $4, $5)
                                 RETURNING id_cliente;`;
 
             const respostaBD = await database.query(queryInsertCliente, [
