@@ -9,11 +9,11 @@ router.get("/api", (req: Request, res: Response) => {
     res.status(200).json({ mensagem: "Olá, seja bem-vindo!" });
 });
 
-router.get("/api/clientes", ClienteController.todos);
+router.get("/api/cliente", ClienteController.todos);
 
-router.post("/api/clientes", ClienteController.novo);
+router.post("/api/cliente", ClienteController.novo);
 
-router.get("/api/clientes/:cpf", ClienteController.cliente);
+router.get("/api/cliente/:cpf", ClienteController.cliente);
 
 
 router.get("/api/medicamentos", MedicamentoController.todos);
@@ -22,5 +22,5 @@ router.post("/api/medicamentos", MedicamentoController.novo);
 
 router.get("/api/medicamentos/:nome", MedicamentoController.medicamentoNome);
 
-router.get("/api/medicamentos/:principioativo", MedicamentoController.medicamentoPrincipio);
+router.get("/api/medicamentos/principio/:principioAtivo", MedicamentoController.medicamentoPrincipio);
 export { router };

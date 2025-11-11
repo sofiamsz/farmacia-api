@@ -14,7 +14,7 @@ class MedicamentoController extends Medicamento {
 
     }
 
-        static async novo(req: Request, res: Response): Promise<Response> {
+    static async novo(req: Request, res: Response): Promise<Response> {
         try {
             const dadosRecebidosMedicamento = req.body;
             const respostaModelo = await Medicamento.cadastrarMedicamento(dadosRecebidosMedicamento);
@@ -32,8 +32,8 @@ class MedicamentoController extends Medicamento {
     static async medicamentoNome(req: Request, res: Response): Promise<Response> {
         try {
             const nome: string = (req.params.nome as string);
-           if(nome == null) {
-            return res.status(400).json({ mensagem: "Nome não informado." });
+            if (nome == null) {
+                return res.status(400).json({ mensagem: "Nome não informado." });
             }
             const respostaModelo = await Medicamento.listarMedicamentoNome(nome);
             if (respostaModelo == null) {
@@ -48,15 +48,15 @@ class MedicamentoController extends Medicamento {
         }
     }
 
-        static async medicamentoPrincipio(req: Request, res: Response): Promise<Response> {
+    static async medicamentoPrincipio(req: Request, res: Response): Promise<Response> {
         try {
             const principioAtivo: string = (req.params.principioAtivo as string);
-           if(principioAtivo == null) {
-            return res.status(400).json({ mensagem: "Princípio ativo não informado." });
+            if (principioAtivo == null) {
+                return res.status(400).json({ mensagem: "Princípio ativo não informado." });
             }
             const respostaModelo = await Medicamento.listarMedicamentoPrincipio(principioAtivo);
             if (respostaModelo == null) {
-                return res.status(200).json({ mensagem: "Nenhum medicamento encontrado com o princípio ativoSS fornecido." });
+                return res.status(200).json({ mensagem: "Nenhum medicamento encontrado com o princípio ativo fornecido." });
             }
             return res.status(200).json(respostaModelo);
         } catch (error) {

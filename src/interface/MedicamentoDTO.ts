@@ -1,5 +1,5 @@
 export interface MedicamentoDTO {
-    idMedicamento? : number,
+    idMedicamento?: number,
     nome: string,
     fabricante: string,
     principioAtivo: string,

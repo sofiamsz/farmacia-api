@@ -67,7 +67,7 @@ class Medicamento {
         this.dataValidade = dataValidade;
     }
 
-        public getPreco(): number {
+    public getPreco(): number {
         return this.preco;
     }
 
@@ -75,31 +75,31 @@ class Medicamento {
         this.preco = preco;
     }
 
-         static async cadastrarMedicamento(medicamento: MedicamentoDTO): Promise<boolean> {
-            try {
-                const queryInsertMedicamento = `INSERT INTO medicamentos (nome, fabricante, principio_ativo, data_validadade, preco)
+    static async cadastrarMedicamento(medicamento: MedicamentoDTO): Promise<boolean> {
+        try {
+            const queryInsertMedicamento = `INSERT INTO medicamentos (nome, fabricante, principio_ativo, data_validade, preco)
                                     VALUES
                                     ($1, $2, $3, $4, $5)
-                                    RETURNING id_cliente;`;
-    
-                const respostaBD = await database.query(queryInsertMedicamento, [
-                    medicamento.nome.toUpperCase(),
-                    medicamento.fabricante,
-                    medicamento.principioAtivo,
-                    medicamento.dataValidade,
-                    medicamento.preco
-                ]);
-                if (respostaBD.rows.length > 0) {
-                    console.info(`Medicamento cadastrado com sucesso. ID: ${respostaBD.rows[0].id_medicamento
+                                    RETURNING id;`;
+
+            const respostaBD = await database.query(queryInsertMedicamento, [
+                medicamento.nome.toUpperCase(),
+                medicamento.fabricante,
+                medicamento.principioAtivo,
+                medicamento.dataValidade,
+                medicamento.preco
+            ]);
+            if (respostaBD.rows.length > 0) {
+                console.info(`Medicamento cadastrado com sucesso. ID: ${respostaBD.rows[0].id_medicamento
                     }`);
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.error(`Erro na consulta ao banco de dados. ${error}`);
-                return false;
+                return true;
             }
+            return false;
+        } catch (error) {
+            console.error(`Erro na consulta ao banco de dados. ${error}`);
+            return false;
         }
+    }
 
     static async listarMedicamento(): Promise<Array<Medicamento> | null> {
         try {
@@ -113,8 +113,8 @@ class Medicamento {
                 const novoMedicamento: Medicamento = new Medicamento(
                     linha.nome,
                     linha.fabricante,
-                    linha.principioAtivo,
-                    linha.dataValidade,
+                    linha.principio_ativo,
+                    linha.data_validade,
                     linha.preco
                 );
 
@@ -130,11 +130,11 @@ class Medicamento {
         }
     }
 
-        static async listarMedicamentoNome(nome: string): Promise<Medicamento | null> {
+    static async listarMedicamentoNome(nome: string): Promise<Medicamento | null> {
         try {
             const querySelectMedicamento = 'SELECT * FROM medicamentos WHERE nome=$1;';
 
-            const respostaBD = await database.query(querySelectMedicamento, [nome]);
+            const respostaBD = await database.query(querySelectMedicamento, [nome.toUpperCase()]);
 
             if (respostaBD.rowCount != 0) {
                 const medicamento: Medicamento = new Medicamento(
@@ -157,9 +157,11 @@ class Medicamento {
         }
     }
 
-            static async listarMedicamentoPrincipio(principioAtivo: string): Promise<Medicamento | null> {
+    static async listarMedicamentoPrincipio(principioAtivo: string): Promise<Medicamento | null> {
         try {
-            const querySelectMedicamento = 'SELECT * FROM medicamentos WHERE principio_ativo=$3;';
+            const querySelectMedicamento = 'SELECT * FROM medicamentos WHERE principio_ativo=$1;';
+
+            console.log(querySelectMedicamento, principioAtivo);
 
             const respostaBD = await database.query(querySelectMedicamento, [principioAtivo]);
 
@@ -179,7 +181,7 @@ class Medicamento {
             return null;
 
         } catch (error) {
-            console.error('Erro ao buscar medicamento no banco de dados. ${error}');
+            console.error(`Erro ao buscar medicamento no banco de dados. ${error}`);
             return null
         }
     }

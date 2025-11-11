@@ -74,12 +74,12 @@ class Cliente {
         this.email = email;
     }
 
-     static async cadastrarCliente(cliente: ClienteDTO): Promise<boolean> {
+    static async cadastrarCliente(cliente: ClienteDTO): Promise<boolean> {
         try {
-            const queryInsertCliente = `INSERT INTO clientes (nome, cpf, telefone, dataNascimento, email)
+            const queryInsertCliente = `INSERT INTO cliente (nome, cpf, telefone, data_nascimento, email)
                                 VALUES
                                 ($1, $2, $3, $4, $5)
-                                RETURNING id_cliente;`;
+                                RETURNING id;`;
 
             const respostaBD = await database.query(queryInsertCliente, [
                 cliente.nome.toUpperCase(),
@@ -129,7 +129,7 @@ class Cliente {
     }
     static async listarCliente(cpf: number): Promise<Cliente | null> {
         try {
-            const querySelectClientes = 'SELECT * FROM clientes WHERE cpf=$1;';
+            const querySelectClientes = 'SELECT * FROM cliente WHERE cpf=$1;';
 
             const respostaBD = await database.query(querySelectClientes, [cpf]);
 

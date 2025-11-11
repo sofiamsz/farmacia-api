@@ -1,5 +1,5 @@
 export interface ClienteDTO {
-    idCliente? : number,
+    idCliente?: number,
     nome: string,
     cpf: number,
     telefone: number,
